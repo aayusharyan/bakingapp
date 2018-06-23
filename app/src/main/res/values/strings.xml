@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">BakingApp</string>
+    <string name="errorLoadingDataMessage">Error Loading Data, Please Swipe to Retry.</string>
+    <string name="serveCountLabel">Serves:</string>
+    <string name="title_step_list">steps</string>
+    <string name="title_step_detail">step Detail</string>
+    <string name="title_activity_ingredient">Ingredients</string>
+    <string name="appwidget_text">BakingApp</string>
+    <string name="add_widget">Add widget</string>
+    <string name="no_data_label">Open app, Refresh Recipes first</string>
+    <string name="configure">Configure</string>
+</resources>

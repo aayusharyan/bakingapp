@@ -295,6 +295,7 @@ public class stepDetailActivity extends AppCompatActivity {
         position = savedInstanceState.getLong(SELECTED_POSITION, 0);
         if(player != null) {
             player.seekTo(position);
+            player.setPlayWhenReady(true);
         }
     }
 }

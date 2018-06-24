@@ -37,10 +37,9 @@ public class stepListActivity extends AppCompatActivity {
             Intent intent = new Intent(this, ingredientActivity.class);
             intent.putExtra(MainActivity.JSONPositionKey, currentRecipeID);
             startActivity(intent);
-        } else {
-            finish();
+            return true;
         }
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

@@ -63,6 +63,8 @@ public class stepDetailActivity extends AppCompatActivity {
     private boolean isZoomed;
     private SimpleExoPlayer player;
     private String videoURL;
+    private long position;
+    public static String SELECTED_POSITION = "exo_player_time_position";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +94,8 @@ public class stepDetailActivity extends AppCompatActivity {
             stepDetailFragment fragment = new stepDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction().add(R.id.step_detail_container, fragment).commit();
+        } else {
+            position = savedInstanceState.getLong(SELECTED_POSITION, 0);
         }
 
         isFullScreen = false;
@@ -131,6 +135,10 @@ public class stepDetailActivity extends AppCompatActivity {
 
         player = ExoPlayerFactory.newSimpleInstance(this, trackSelector);
 
+        if (position != 0) {
+            player.seekTo(position);
+        }
+
         playerView.setPlayer(player);
 
 
@@ -139,6 +147,7 @@ public class stepDetailActivity extends AppCompatActivity {
         final MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(videoURL));
 
         player.prepare(videoSource);
+        player.setPlayWhenReady(true);
 
         player.addListener(new Player.EventListener() {
             @Override
@@ -199,16 +208,6 @@ public class stepDetailActivity extends AppCompatActivity {
         initFullscreenDialog();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
-            finish();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     private void initFullscreenDialog() {
         mFullScreenDialog = new Dialog(this, android.R.style.Theme_Black_NoTitleBar_Fullscreen) {
             @Override
@@ -267,18 +266,35 @@ public class stepDetailActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
+    public void onPause() {
+        super.onPause();
         if(player != null) {
+            position = player.getCurrentPosition();
             player.release();
         }
-        super.onDestroy();
     }
 
     @Override
-    public void onBackPressed() {
+    public void onStop() {
+        super.onStop();
         if(player != null) {
+            position = player.getCurrentPosition();
             player.release();
         }
-        finish();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putLong(SELECTED_POSITION, position);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        position = savedInstanceState.getLong(SELECTED_POSITION, 0);
+        if(player != null) {
+            player.seekTo(position);
+        }
     }
 }
